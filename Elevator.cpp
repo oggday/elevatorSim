@@ -87,9 +87,6 @@ Elevator::Elevator(
 
    init();
 
-   /* FOR DEBUG */
-   scheduledFloors.push_back( 1 );
-
    if(isDebugBuild()) {
       std::stringstream dbgSS;
       dbgSS << "constructed elevator @" << this << std::endl;
@@ -276,8 +273,6 @@ void Elevator::update() {
             SimulationState::acquire().getBuilding().getMinElevHeight();
    const int maxElevHeight =
             SimulationState::acquire().getBuilding().getMaxElevHeight();
-   const int numFloors =
-            SimulationState::acquire().getBuilding().getStories();
    const int currentTime =
             SimulationState::acquire().getTime();
 
@@ -291,8 +286,7 @@ void Elevator::update() {
 
    /* are we on stopped on a floor with another floor scheduled? */
    if( currentVel == 0 &&
-            yVal % Floor::YVALS_PER_FLOOR == 0 &&
-            scheduledFloors.size() > 0 ) {
+            yVal % Floor::YVALS_PER_FLOOR == 0 ) {
 
       /* is the close door timer unset ? */
       if(closeDoorTimer == -1) {
@@ -305,29 +299,26 @@ void Elevator::update() {
          /* stop drawing any people that are dangling */
          peopleGetOnOffAnimationOff();
 
-         /* comute this floor and retrieve the next floor */
-         const int thisFloor = (yVal / Floor::YVALS_PER_FLOOR);
-         const int nextFloor = scheduledFloors.back();
+         /* check if there are any scheduled floors */
+         if( scheduledFloors.size() > 0 ) {
+            /* compute this floor and retrieve the next floor */
+            const int thisFloor = (yVal / Floor::YVALS_PER_FLOOR);
+            const int nextFloor = scheduledFloors.back();
 
-         /* remove this floor from the scheduled floors queue */
-         scheduledFloors.pop_back();
+            /* remove this floor from the scheduled floors queue */
+            scheduledFloors.pop_back();
 
-         /* if it's different from this floor, schedule the accelerations */
-         if( thisFloor != nextFloor ) {
-            scheduleAccelsToFloor(thisFloor, nextFloor);
-         }
-
-         /* FOR DEBUG: schedule a new random dest upon arriving at a floor
-          * if there are no stops after this */
-         if( scheduledFloors.size() == 0 ) {
-            scheduledFloors.push_back(rand() % numFloors);
-
-            /* call into python and process the user's elevator script
-             * (work in progress) */
+            /* if it's different from this floor, schedule the accelerations */
+            if( thisFloor != nextFloor ) {
+               scheduleAccelsToFloor(thisFloor, nextFloor);
+            }
+         } else {
+            /* no scheduled floors and we're stopped, so consult python */
             SimulationState::acquire().runUserScriptUnsafe();
          }
       }
    }
+
 
    /* is there a scheduled acceleration pending? */
    if( scheduledAccels.size() ) {
