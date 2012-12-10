@@ -200,8 +200,32 @@ void SimulationState::runUserScriptUnsafe() {
          "got valid result from python. parsing..." );
       }
       
-      /* TODO: interpret the results */
-   }
+      int numSignals = PyTuple_Size(computeFunctionResult);
+
+      for( int i = 0; i < numSignals; ++i ) {
+         PyObject* signalTuple = PyTuple_GetItem(computeFunctionResult, i);
+
+         if( !PyTuple_Check(signalTuple) || PyTuple_Size( signalTuple ) != 2 ) {
+            LOG_ERROR( Logger::SUB_ELEVATOR_LOGIC,
+               "got invalid signal tuple. discarding...");
+         } else {
+            PyObject* elevNumObj = PyTuple_GetItem(signalTuple, 0);
+            PyObject* elevDestObj = PyTuple_GetItem(signalTuple, 1);
+
+            if(elevNumObj == NULL || elevDestObj == NULL ) {
+               PyErr_Print();
+
+               LOG_ERROR( Logger::SUB_ELEVATOR_LOGIC,
+                  "couldn't parse signal tuple to a pair of ints. check python code.");
+            } else {
+
+               std::cerr << "from python: " << PyLong_AsLong(elevNumObj)
+                  << " " << PyLong_AsLong(elevDestObj) << std::endl;
+
+            }
+         } /* else signal tuple is valid */
+      } /* for each signal */
+   } /* if computeFunction result was invalid */
 
    if(isDebugBuild()) {
       std::stringstream dbgSS;
