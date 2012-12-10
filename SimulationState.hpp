@@ -98,6 +98,7 @@ public:
       const std::string& pyAiPath );
 
    void runUserScriptUnsafe();
+   void dispatchElevatorToFloor( const int elev, const int floor );
 
    bool togglePause();
 
@@ -160,6 +161,7 @@ private:
    void decrefSimStateTuple(PyObject* simStateTuple);
 
    bool loadPythonScript( const std::string& pyAiPath );
+   
 
    Building* building;
    PyObject* userScriptCodeObject;

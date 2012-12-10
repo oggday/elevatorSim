@@ -189,7 +189,6 @@ void SimulationState::runUserScriptUnsafe() {
       PyErr_Print();
 
       if(isDebugBuild()) {
-         std::stringstream dbgSS;
          LOG_ERROR( Logger::SUB_ELEVATOR_LOGIC, 
             "error occurred while attempting to call python object!" );
       }
@@ -197,9 +196,9 @@ void SimulationState::runUserScriptUnsafe() {
    } else {
       if(isDebugBuild()) {
          LOG_INFO( Logger::SUB_ELEVATOR_LOGIC, 
-         "got valid result from python. parsing..." );
+            "got valid result from python. parsing..." );
       }
-      
+
       int numSignals = PyTuple_Size(computeFunctionResult);
 
       for( int i = 0; i < numSignals; ++i ) {
@@ -219,9 +218,22 @@ void SimulationState::runUserScriptUnsafe() {
                   "couldn't parse signal tuple to a pair of ints. check python code.");
             } else {
 
-               std::cerr << "from python: " << PyLong_AsLong(elevNumObj)
-                  << " " << PyLong_AsLong(elevDestObj) << std::endl;
+               int elevNum = PyLong_AsLong(elevNumObj);
+               int elevDest = PyLong_AsLong(elevDestObj);
 
+               if(isDebugBuild()) {
+                  std::stringstream dbgSS;
+
+                  dbgSS << "signal pair from python: " << elevNum
+                     << " " << elevDest << std::endl;
+
+                  LOG_ERROR( Logger::SUB_ELEVATOR_LOGIC, 
+                     sstreamToBuffer(dbgSS) );
+               }
+
+               dispatchElevatorToFloor( 
+                  elevNum, 
+                  elevDest);
             }
          } /* else signal tuple is valid */
       } /* for each signal */
@@ -234,6 +246,11 @@ void SimulationState::runUserScriptUnsafe() {
    }
 
    Py_XDECREF(computeFunctionResult);
+}
+
+void SimulationState::dispatchElevatorToFloor( const int elev, const int floor ) {
+
+
 }
 
 bool SimulationState::togglePause() {
