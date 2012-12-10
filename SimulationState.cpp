@@ -248,9 +248,22 @@ void SimulationState::runUserScriptUnsafe() {
    Py_XDECREF(computeFunctionResult);
 }
 
-void SimulationState::dispatchElevatorToFloor( const int elev, const int floor ) {
+void SimulationState::dispatchElevatorToFloor( \
+   const unsigned int elev, 
+   const unsigned int floor ) {
+      if( elev >= building->getElevators().size()) {
+         LOG_ERROR( Logger::SUB_ELEVATOR_LOGIC,
+            "elevator index dispatched python out of range. ignoring..." );
+         return;
+      }
 
+      if( floor >= building->getFloors().size()) {
+         LOG_ERROR( Logger::SUB_ELEVATOR_LOGIC,
+            "floor index dispatched python out of range. ignoring..." );
+         return;
+      }
 
+      building->getElevators()[elev]->goToFloor(floor);
 }
 
 bool SimulationState::togglePause() {

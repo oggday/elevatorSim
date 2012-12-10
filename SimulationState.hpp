@@ -98,7 +98,9 @@ public:
       const std::string& pyAiPath );
 
    void runUserScriptUnsafe();
-   void dispatchElevatorToFloor( const int elev, const int floor );
+   void dispatchElevatorToFloor( 
+      const unsigned int elev, 
+      const unsigned int floor );
 
    bool togglePause();
 
