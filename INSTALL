@@ -76,3 +76,50 @@ Python:
    Build the Win32/Debug target.
    Results will be in the solution directory.
    Refer to http://python.org/doc for further documentation.
+
+NOTES FOR BUILDING DEPENDENCIES ON OS X 
+
+CLANG:
+
+  You need a recent version of clang which supports c++11.
+  The one that XCode installs may be new enough. 
+  If you get a bunch of errors about the use of unordered_map or similar, you need to upgrade.
+
+  Refer to http://clang.llvm.org/get_started.html
+
+  You'll want to configure with something like this:
+
+  ./configure --enable-targets=x86_64 --enable-optimize --disable-assertions --prefix /install/path
+
+LIBC++:
+
+  If your version of clang was too old and you don't have a recent version of gcc around, 
+  you'll need to build the new standard libraries. Go here and follow the instructions:
+  http://libcxx.llvm.org
+
+BOOST:
+
+  download boost from boost.org (currently v1.52)
+
+  Use the same cmdline as above, except add prefix at the end:
+
+  ./b2 --with-chrono --with-program_options --with-system --with-thread --with-test --with-date_time --variant=debug --threading=multi --link=static --prefix=/path/to/prefix
+
+  The prefix should specify a directory you have write access to, for example /path/to/your/home/local
+  Remember what directory you use, you'll need to add it to the makefile later.
+
+FLTK:
+  Just ./configure, make, make install
+  You may want to use the same prefix as you used before.
+  
+PYTHON:
+  If you don't have 3.3, you need to build it.
+  No special configuration required, just ./configure, make, make install
+
+Now you need to go into the makefile and insert the path you installed boost to.
+Then, make sure that python3.3-config and fltk-config are in your path.
+Now, finally, invoke make from within the project directory:
+
+make -f makefile.x86_64.darwin.clang3x
+
+If this fails, let me know.
