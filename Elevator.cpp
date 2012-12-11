@@ -218,6 +218,7 @@ void Elevator::init() {
    peopleOnOffPosX = 0.f;
    peopleOnCounter = 0;
    peopleOffCounter = 0;
+   doorOpenAngle = 0.f;
 
    scheduledFloors.clear();
    scheduledAccels.clear();
@@ -227,6 +228,16 @@ void Elevator::render() {
    glPushMatrix();
    glTranslatef(0.f, 0.1f, 1.0f);
    glCallList(cRenderObjs::OBJ_ELEVATOR);
+
+   /* Left wall of Elevator */
+   glPushMatrix();
+   glTranslatef(0.f, 0.f, -1.f);
+   glRotatef(doorOpenAngle, 0.f, 1.0f, 0.f);
+   glTranslatef(-cRenderObjs::GFX_ELEV_SCALE_WIDTH, 0, 1.f);   
+   glScalef(0.05f, cRenderObjs::GFX_ELEV_SCALE_HEIGHT, 1.0f);
+   glCallList(cRenderObjs::OBJ_CUBE);
+   glPopMatrix();
+
    cRenderObjs::renderOccupants(numPeopleContained(), maxOccupants, false);
 
    /*  People riding and off elevator animation */
@@ -287,11 +298,24 @@ void Elevator::update() {
    /* are we on stopped on a floor with another floor scheduled? */
    if( currentVel == 0 &&
             yVal % Floor::YVALS_PER_FLOOR == 0 ) {
+      if(closeDoorTimer != -1)   {
+         if (closeDoorTimer < currentTime + 30)  {
+            doorOpenAngle += .7f;
+            if(doorOpenAngle > 0.f) doorOpenAngle = 0.f;
+            
+         }
+         else  {
+            doorOpenAngle -= .7f;
+            if(doorOpenAngle < -40.f) doorOpenAngle = -40.f;
+         }
+      }
 
       /* is the close door timer unset ? */
       if(closeDoorTimer == -1) {
          /* calculate the logic tick offset for opening the door */
          closeDoorTimer = currentTime + DEFAULT_DOOR_CLOSE_DELAY;
+         doorOpenAngle = 0.f;
+
       } else if (closeDoorTimer < currentTime) {
          /* otherwise if the door has closed... */
          closeDoorTimer = -1;

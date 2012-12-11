@@ -55,6 +55,9 @@ void cCameraManager::init()
    m_vecCamLookAt.Set(0.f, 0.f, 0.f);
    m_vecCamUp.Set(0.0f, 1.0f, 0.0f);
 
+   m_vecZoomPos.Set(0.f, 0.f, 0.f);
+   m_vecZoomLook.Set(0.f, 0.f, 0.f);
+
    Vec3f lookingVec = m_vecCamPos - m_vecCamLookAt;
    Vec3f right = getRight();
    Vec3f::Cross3(m_vecCamUp, right, lookingVec);
@@ -62,6 +65,8 @@ void cCameraManager::init()
    m_fPitchAngle = 0.f;
    m_fYawAngle = 0.f;
    m_fRollAngle = 0.f;
+
+   m_bZoomInEnabled = false;
 
    if(isDebugBuild()) {
       std::stringstream dbgSS;
@@ -141,13 +146,21 @@ void cCameraManager::update() {
 
 void cCameraManager::render()
 {
-   glRotatef(m_fPitchAngle, 1, 0, 0);
-   glRotatef(m_fYawAngle, 0, 1, 0);
-   glRotatef(m_fRollAngle, 0, 0, 1);
+   //glRotatef(m_fPitchAngle, 1, 0, 0);
+   //glRotatef(m_fYawAngle, 0, 1, 0);
+   //glRotatef(m_fRollAngle, 0, 0, 1);
 
-   gluLookAt(m_vecCamPos.x, m_vecCamPos.y, m_vecCamPos.z,
-            m_vecCamLookAt.x, m_vecCamLookAt.y, m_vecCamLookAt.z,
-            m_vecCamUp.x, m_vecCamUp.y, m_vecCamUp.z);
+   if(m_bZoomInEnabled) {
+      gluLookAt(m_vecCamPos.x, m_vecCamPos.y, m_vecCamPos.z,
+                m_vecCamLookAt.x, m_vecCamLookAt.y, m_vecCamLookAt.z,
+                m_vecCamUp.x, m_vecCamUp.y, m_vecCamUp.z);
+   }
+
+   else  {
+      gluLookAt(m_vecCamPos.x, m_vecCamPos.y, m_vecCamPos.z,
+                m_vecCamLookAt.x, m_vecCamLookAt.y, m_vecCamLookAt.z,
+                m_vecCamUp.x, m_vecCamUp.y, m_vecCamUp.z);
+   }
 }
 
 void cCameraManager::yaw(float fAngle)
@@ -174,6 +187,24 @@ Vec3f cCameraManager::getRight()
    right.Normalize();
 
    return right;
+}
+
+void cCameraManager::UpdateZoomVectors(Vec3f pos, Vec3f look)
+{
+   m_vecZoomPos = pos;
+   m_vecZoomLook = look;
+}
+
+void cCameraManager::ActivateZoomin()
+{
+   m_bZoomInEnabled = true;
+}
+
+void cCameraManager::DeactivateZoomin()
+{
+   m_bZoomInEnabled = false;
+
+   init();
 }
 
 } /* namespace elevatorSim */

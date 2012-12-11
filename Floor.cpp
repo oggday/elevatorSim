@@ -211,10 +211,10 @@ void Floor::updateSignalArrows() {
    while(iter != people.end()) {
       const Person* currentPerson = *iter;
       if(currentPerson->getDestinationYVal()
-               - thisFloor > 0) {
+               - thisFloor * YVALS_PER_FLOOR > 0) {
          signalingUp = true;
       } else if(currentPerson->getDestinationYVal()
-               - thisFloor < 0) {
+               - thisFloor * YVALS_PER_FLOOR < 0) {
          signalingDown = true;
       }
 

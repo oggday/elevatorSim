@@ -159,12 +159,7 @@ void cRenderObjs::initElevator()
    glMaterialf(GL_FRONT, GL_SHININESS, shi);
    glMaterialfv(GL_FRONT, GL_EMISSION, emi);
 
-   /* Left wall of Elevator */
-   glPushMatrix();
-   glTranslatef(-GFX_ELEV_SCALE_WIDTH, 0, 0.f);
-   glScalef(0.05f, GFX_ELEV_SCALE_HEIGHT, 1.0f);
-   glCallList(OBJ_CUBE);
-   glPopMatrix();
+   
 
    /* Right wall of Elevator */
    glPushMatrix();

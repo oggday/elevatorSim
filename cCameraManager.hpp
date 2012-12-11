@@ -48,9 +48,14 @@ class cCameraManager : public ISimulationTerminal {
    Vec3f m_vecCamLookAt;
    Vec3f m_vecCamUp;
 
+   Vec3f m_vecZoomPos;
+   Vec3f m_vecZoomLook;
+
    float m_fPitchAngle;
    float m_fYawAngle;
    float m_fRollAngle;
+
+   bool m_bZoomInEnabled;
 
    cCameraManager();
 
@@ -85,6 +90,11 @@ public:
    inline Vec3f GetCameraUp() {
       return m_vecCamUp;
    }
+
+   bool isZoomIn()   {  return m_bZoomInEnabled;   }
+   void UpdateZoomVectors(Vec3f pos, Vec3f look);
+   void ActivateZoomin();
+   void DeactivateZoomin();
 }; /* cCameraManager */
 
 } /* namespace elevatorSim */

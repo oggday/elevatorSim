@@ -252,14 +252,10 @@ void ElevatorSimRenderWindow::draw() {
    SimulationState::StateKind currentSimState = simState.getStateUnsafe();
    simState.unlockBASM(); /* CRITICAL SECTION STOP */
 
-
    if(currentSimState == SimulationState::SIMULATION_RUNNING &&
             m_bRenderFPS) {
       drawFPS(curFPS, curTotalFrames);
    }
-
-   /* glTranslatef(0.f, 3.f, 3.f);
-    * glCallList(cRenderObjs::OBJ_HUMAN); */
 
    GLenum err = glGetError();
    if ( err != GL_NO_ERROR ) {

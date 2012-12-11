@@ -83,6 +83,8 @@ class Elevator :
    int peopleOnCounter;
    float peopleOnOffPosX;
 
+   float doorOpenAngle;
+
    std::vector<int> scheduledFloors;
    std::vector<std::pair<int, int>> scheduledAccels;
 
