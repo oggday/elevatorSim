@@ -34,6 +34,8 @@ OBJS=$(CLIENT_OBJ) $(SIM_OBJS)
 
 DRIVERFLAGS=/errorreport:none /nologo
 
+# /analyze:WX- you can add this if you've got premium or better
+# (not enabled on express)
 CXXFLAGS=/W4 /WX /EHac /c /D_ES_WINNT /Iinc /Iinc\Python
 
 DEBUGFLAGS=/Z7 /Gm- /MDd
