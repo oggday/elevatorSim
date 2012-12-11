@@ -248,8 +248,8 @@ void SimulationState::runUserScriptUnsafe() {
    Py_XDECREF(computeFunctionResult);
 }
 
-void SimulationState::dispatchElevatorToFloor( \
-   const unsigned int elev, 
+void SimulationState::dispatchElevatorToFloor(
+   const unsigned int elev,
    const unsigned int floor ) {
       if( elev >= building->getElevators().size()) {
          LOG_ERROR( Logger::SUB_ELEVATOR_LOGIC,
