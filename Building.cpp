@@ -65,7 +65,7 @@ template <class T> PyObject*
 
       /* iterate over each floor, telling it to update its tuple */
       int i = 0;
-      for( std::vector<T*>::const_iterator iter = memberRef.begin(); 
+      for( typename std::vector<T*>::const_iterator iter = memberRef.begin(); 
       iter != memberRef.end();
       ++iter) {
          T* const currentItemGeneric = *iter;
