@@ -181,6 +181,11 @@ void Person::updateTuple() {
    assert(pythonRepr != NULL);
 }
 
+void Person::freeTuple() {
+   /* this class gets its tuple stolen by an IPersonCarrier and thusly
+    * would cause a negative ref count assertion if it decref'd itself */
+}
+
 IPersonCarrier* Person::locateContainer() const {
    /* find parent by searching over all floors and elevators,
     * this operation's worst case runs in linear time, O(E+F),

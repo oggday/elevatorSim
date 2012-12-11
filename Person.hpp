@@ -95,10 +95,7 @@ public:
    void update();
 
    void updateTuple();
-
-   void freeTuple() {
-      Py_CLEAR(pythonRepr);
-   }
+   void freeTuple();
 
    IPersonCarrier* locateContainer() const;
 };

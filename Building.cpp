@@ -323,6 +323,8 @@ void Building::freeTuple() {
 
    Py_CLEAR(pythonRepr);
 
+   assert(PyTuple_Check(elevatorsTuple));
+
    Py_CLEAR(elevatorsTuple);
    Py_CLEAR(floorsTuple);
 }
