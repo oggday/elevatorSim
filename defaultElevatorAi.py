@@ -10,4 +10,5 @@ def computeNextMove(floors, elevators):
    # the C++ code on the other end of this function expects a tuple of tuples
    # of size 2, not a tuple of ints.
    
-   return ( ( random.randint(1, numElevs), random.randint(1, numFloors) ), ) 
+   return ( ( random.randint(0, numElevs-1),
+              random.randint(0, numFloors-1) ), ) 
