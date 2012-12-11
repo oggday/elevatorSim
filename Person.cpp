@@ -31,7 +31,6 @@
 
 #include "ElevatorSim.hpp"
 #include "Person.hpp"
-#include "Location.hpp"
 #include "Logger.hpp"
 #include "SimulationState.hpp"
 
@@ -42,19 +41,19 @@ namespace elevatorSim {
 
 /* constructors */
 Person::Person(
-   Location startLoc,
-   Location dest,
+   int _startYVal,
+   int _destinationYVal,
    enum PRIORITY p) {
-      start = startLoc;
-      destination = dest;
+      startYVal = _startYVal;
+      destinationYVal = _destinationYVal;
       priority = p;
 
       /* print debug info */
       if(isDebugBuild()) {
          std::stringstream dbgSS;
          dbgSS << "with person @ " << this
-            << " start " << start.getYVal()
-            << ", dest " << destination.getYVal()
+            << " start " << startYVal
+            << ", dest " << destinationYVal
             << ", pri = " << (int)priority << std::endl;
 
          LOG_INFO( Logger::SUB_MEMORY, sstreamToBuffer( dbgSS ));
@@ -95,8 +94,8 @@ void Person::update() {
 
       /* if our container elevator has got the same yVal as our destination,
       * we've arrived */
-      if( elevatorContainer->getYVal() == destination.getYVal() ) {
-         int floorIndex = destination.getYVal() / Floor::YVALS_PER_FLOOR;
+      if( elevatorContainer->getYVal() == destinationYVal ) {
+         int floorIndex = destinationYVal / Floor::YVALS_PER_FLOOR;
 
          /* move ourselves to this floor */
          floors[floorIndex] -> addPerson( this );
@@ -122,9 +121,7 @@ void Person::update() {
             LOG_INFO( Logger::SUB_ELEVATOR_LOGIC, sstreamToBuffer( dbgSS ));
          }
       }
-   }
-
-   else if( container->getCarrierType() == IPersonCarrier::FLOOR_CARRIER ) {
+   } else if( container->getCarrierType() == IPersonCarrier::FLOOR_CARRIER ) {
       Floor* floorContainer = static_cast<Floor*> (container);
       std::set<Elevator*> candidateElevators;
 
@@ -134,7 +131,7 @@ void Person::update() {
          elevators.begin(),
          elevators.end(),
          [this, &candidateElevators] ( Elevator* thisElevator ) {
-            if(!thisElevator->isFull() && thisElevator -> getYVal() == start.getYVal() * Floor::YVALS_PER_FLOOR ) {
+            if(!thisElevator->isFull() && thisElevator -> getYVal() == startYVal ) {
                /* we've found a candidate elevator, so add it to the set */ 
                candidateElevators.insert(thisElevator);
             }
@@ -156,6 +153,32 @@ void Person::update() {
          assert( floorContainer -> removePerson( this ) );
       }
    } 
+}
+
+void Person::updateTuple() {
+   if(pythonRepr != NULL) {
+      freeTuple();
+   }
+
+   /* convert from logical coordinate to floor ordinal */
+   int startFloorOrdinal = startYVal / Floor::YVALS_PER_FLOOR;
+   int destFloorOrdinal = destinationYVal / Floor::YVALS_PER_FLOOR;
+
+   pythonRepr = Py_BuildValue("(ii)",
+      startFloorOrdinal,
+      destFloorOrdinal);
+
+   if(isDebugBuild()) {
+      std::stringstream dbgSS;
+      dbgSS << "created tuple at: " << pythonRepr << std::endl;
+      LOG_INFO( Logger::SUB_MEMORY, sstreamToBuffer(dbgSS) );
+   }
+
+   if(PyErr_Occurred()) {
+      PyErr_Print();
+   }
+
+   assert(pythonRepr != NULL);
 }
 
 IPersonCarrier* Person::locateContainer() const {

@@ -331,17 +331,21 @@ void Building::distributePeople() {
    /* roll the dice to see if we'll be adding a person */
    if( rand() % invPersonArriveProb == 0 ) {
       /* pick a random source floor */
-      const int sourceFloor = rand() % floors.size();
-      int destFloor;
+      const int sourceFloorOrdinal = rand() % floors.size();
+      int destFloorOrdinal;
 
       /* pick a different random dest floor */
-      while( (destFloor = rand() % floors.size()) == sourceFloor );
+      while( (destFloorOrdinal = rand() % floors.size())
+         == sourceFloorOrdinal );
 
       /* allocate a new person off the heap */
-      Person* newPerson = new Person(sourceFloor, destFloor);
+
+      Person* newPerson = new Person(
+         sourceFloorOrdinal * Floor::YVALS_PER_FLOOR,
+         destFloorOrdinal * Floor::YVALS_PER_FLOOR);
 
       /* add the new randomly generated occupant */
-      floors[sourceFloor]->addPerson(newPerson);
+      floors[sourceFloorOrdinal]->addPerson(newPerson);
    }
 }
 

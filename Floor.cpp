@@ -184,7 +184,7 @@ void Floor::update() {
       ++nextPosition;
 
       /* if the person was getting off on this floor, remove them */
-      if(currentMutablePerson->getDestination().getYVal()
+      if(currentMutablePerson->getDestinationYVal()
                == thisFloor * Floor::YVALS_PER_FLOOR )  {
 
          people.erase(iter++);
@@ -210,10 +210,10 @@ void Floor::updateSignalArrows() {
    std::unordered_set<Person*>::const_iterator iter = people.begin();
    while(iter != people.end()) {
       const Person* currentPerson = *iter;
-      if(currentPerson->getDestination().getYVal()
+      if(currentPerson->getDestinationYVal()
                - thisFloor > 0) {
          signalingUp = true;
-      } else if(currentPerson->getDestination().getYVal()
+      } else if(currentPerson->getDestinationYVal()
                - thisFloor < 0) {
          signalingDown = true;
       }

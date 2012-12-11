@@ -32,10 +32,10 @@
 #ifndef _PERSON_H
 #define _PERSON_H
 
-#include "Location.hpp"
 #include "Building.hpp"
 #include "Elevator.hpp"
 #include "ISimulationTerminal.hpp"
+#include "Floor.hpp"
 
 #include <algorithm>
 
@@ -61,16 +61,16 @@ class Person : public ISimulationTerminal {
    /* private static methods */
 
    /* private instance members */
-   Location start;
-   Location destination;
+   int startYVal;
+   int destinationYVal;
    enum PRIORITY priority;
 
    /* private methods */
 
    /* constructors */
    Person(
-      Location startLoc,
-      Location dest,
+      int _startYVal,
+      int _destinationYVal,
       enum PRIORITY p=UNKNOWN);
 
 public:
@@ -81,13 +81,12 @@ public:
 
    ~Person();
 
-   /* public const methods */
-   Location getDestination() const {
-      return destination;
-   }
-
    enum PRIORITY getPriority() const {
       return priority;
+   }
+
+   int getDestinationYVal() const {
+      return destinationYVal;
    }
 
    /* public methods inherited from ISimulationTerminal*/
@@ -95,25 +94,7 @@ public:
    void render();
    void update();
 
-   void updateTuple() {
-      if(pythonRepr != NULL) {
-         freeTuple();
-      }
-
-      pythonRepr = Py_BuildValue("(ii)", start.getYVal(), destination.getYVal());
-
-      if(isDebugBuild()) {
-         std::stringstream dbgSS;
-         dbgSS << "created tuple at: " << pythonRepr << std::endl;
-         LOG_INFO( Logger::SUB_MEMORY, sstreamToBuffer(dbgSS) );
-      }
-
-      if(PyErr_Occurred()) {
-         PyErr_Print();
-      }
-
-      assert(pythonRepr != NULL);
-   }
+   void updateTuple();
 
    void freeTuple() {
       Py_CLEAR(pythonRepr);
