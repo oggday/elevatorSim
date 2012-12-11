@@ -227,7 +227,7 @@ void SimulationState::runUserScriptUnsafe() {
                   dbgSS << "signal pair from python: " << elevNum
                      << " " << elevDest << std::endl;
 
-                  LOG_ERROR( Logger::SUB_ELEVATOR_LOGIC, 
+                  LOG_INFO( Logger::SUB_ELEVATOR_LOGIC,
                      sstreamToBuffer(dbgSS) );
                }
 
