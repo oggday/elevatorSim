@@ -40,7 +40,7 @@ namespace elevatorSim {
 struct ISimulationTerminal : public IStateObject {
    virtual void update() = 0;
 
-   ISimulationTerminal::ISimulationTerminal() {
+   ISimulationTerminal() {
       pythonRepr = NULL;
    }
    /*
